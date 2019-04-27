@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}   
 <!-- style="display: inline-block; transform: translateX(0px) translateY(64px); height:91%" -->
-<ul id="nav-mobile" class="sidenav sidenav-fixed" style="margin-top:65px;" >
+<div class="divider"></div>
+<ul id="nav-mobile" class="sidenav sidenav-fixed collection with-header" style="margin-top:65px;" >
     <li class="search">
         <div class="search-wrapper">
-            <input id="search" placeholder="Search">
+            <input id="search" placeholder="Search"><i class="material-icons">search</i>
             <div class="search-results"></div>
         </div>
     </li>
@@ -128,6 +129,7 @@
         </li>
     </ul>
 </ul>
+<div class="divider"></div>
 <ul id="nav-mobile" class="sidenav sidenav-fixed" style="margin-left: 80%; margin-top:65px;">
     <ul class="collapsible expandable">
         <li class="bold"><a class="collapsible-header waves-effect waves-teal" tabindex="0">Pinned</a>
