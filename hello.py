@@ -44,15 +44,8 @@ elif os.path.isfile('vcap-local.json'):
 # When running this app on the local machine, default the port to 8000
 port = int(os.getenv('PORT', 8000))
 
-@app.route('/')
-def root():
-    return render_template('index.html')
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    pins = Pin.query.all()
-    print(pins)
     return render_template('index.html', api_url='/api/pin')
 
 
@@ -60,28 +53,28 @@ def index():
 def pin_API():
     if request.method == 'POST':
         pin_info = request.get_json()
-        pin_latitude = pin_info.get('latitude')
-        pin_longtitude = pin_info.get('longtitude')
-        new_pin = Pin(latitude=pin_latitude, longitude=pin_longtitude)
-        DB.session.add(new_pin)
-        DB.session.commit()
+        # pin_latitude = pin_info.get('latitude')
+        # pin_longtitude = pin_info.get('longtitude')
+        # new_pin = Pin(latitude=pin_latitude, longitude=pin_longtitude)
+        # DB.session.add(new_pin)
+        # DB.session.commit()
         return jsonify(pin_info)
     elif request.method == 'DELETE':
         pin_info = request.get_json()
-        deleted_pin = Pin.query.filter_by(id=pin_info.get('id')).first()
-        DB.session.delete(deleted_pin)
-        DB.session.commit()
+        # deleted_pin = Pin.query.filter_by(id=pin_info.get('id')).first()
+        # DB.session.delete(deleted_pin)
+        # DB.session.commit()
         return jsonify(pin_info)
     else: # 'GET' method
-        pins = Pin.query.all()
+        # pins = Pin.query.all()
         results = []
-        for pin in pins:
-            pin_info = {
-                'id': pin.id,
-                'latitude': pin.latitude,
-                'longitude': pin.longitude,
-            }
-            results.append(pin_info)
+        # for pin in pins:
+        #     pin_info = {
+        #         'id': pin.id,
+        #         'latitude': pin.latitude,
+        #         'longitude': pin.longitude,
+        #     }
+        #     results.append(pin_info)
         return jsonify(results)
 
 
