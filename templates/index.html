@@ -51,72 +51,85 @@
     </div>
   </nav>
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-  {% for category, message in messages %}
-  <div>
-    {{ message }}
-  </div>
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
-
   <div id="map"></div>
   <script>
+
     function initMap() {
-      var uluru = { lat: -25.363, lng: 131.044 };
+      var infowindow = new google.maps.InfoWindow();
+      var markers = [];
+      var counter = 0;
+      var uluru = { lat: 39.0119, lng: -98.4842 };
       var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 4,
-        center: uluru
+        center: uluru,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
-      var marker = new google.maps.Marker({
-        position: uluru,
-        map: map,
-        title: 'Uluru (Ayers Rock)'
+      map.addListener('click', function(event) {
+        addMarker(event.latLng);
+        const latitude = event.latLng.lat();
+        const longtitude = event.latLng.lng();
+        newPins({latitude: latitude, longtitude: longtitude});
       });
 
-      google.maps.event.addListener(map, 'click', function(event) {
-          placeMarker(event.latLng); // Event.laglng.lat() add to database
-          const latitude = event.latLng.lat();
-          const longtitude = event.latLng.lng();
-          newPins({latitude: latitude, longtitude: longtitude});
+      infowindow.addListener('domready', function () {
+        $("#deleteButton").click(function() {
+            deleteMarker($(this).data('id'));
+        });
       });
 
       const getPins = () => {
-          return fetch('{{ api_url }}').then(res => res.json());
+        return fetch('{{ api_url }}').then(res => res.json());
       }
 
       getPins().then(function(result) {
-          for(let i in result) {
-              let pin = result[i];
-              console.log(pin);
-              let location = {lat: parseFloat(pin.latitude), lng: parseFloat(pin.longitude)};
-              placeMarker(location);
-          }
+        for(let i in result) {
+            let pin = result[i];
+            let location = {lat: parseFloat(pin.latitude), lng: parseFloat(pin.longitude)};
+            addMarker(location);
+        }
       });
 
-      const placeMarker = location => {
-          const marker = new google.maps.Marker({
-              position: location,
-              map: map
-          });
+      function addMarker(location){
+        counter++;
+        const marker = new google.maps.Marker({
+          position: location,
+          map: map,
+          id: counter
+        });
+
+        markers.push(marker);
+
+        var deleteButton = '<button id="deleteButton" data-id="' + counter + '">Delete</button>';
+
+        marker.addListener('rightclick', function () {
+            infowindow.setContent(deleteButton);
+            infowindow.open(map, marker);
+        });
       }
 
-      const newPins = pin => {
-          const options = {
-              method: 'POST',
-              body: JSON.stringify(pin),
-              headers: new Headers({
-                  'Content-type': 'application/json'
-              })
+      function deleteMarker(markerId) {
+        for (var i=0; i<markers.length; i++) {
+          if (markers[i].id === markerId) {
+              markers[i].setMap(null);
           }
-          return fetch('{{ api_url }}', options)
-              .then(res => res.json())
-              .then(res => console.log(res))
-              .catch(error => console.error('Error: ${error}'))
+        }
       }
-  }    
+
+      function newPins(pin){
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(pin),
+            headers: new Headers({
+                'Content-type': 'application/json'
+            })
+        }
+        return fetch('{{ api_url }}', options)
+            .then(res => res.json())
+            .then(res => console.log(res))
+            .catch(error => console.error('Error: ${error}'))
+      }
+    }    
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJasvCiLPTsX0LJ_Fwp883mst4cQ3bSgM&libraries=drawing&callback=initMap" async defer></script>
   <!-- jQuery JS -->
@@ -129,5 +142,4 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <!-- Custom JS -->
 </body>
-
 </html>
