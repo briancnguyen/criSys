@@ -129,10 +129,20 @@
         </li>
     </ul>
 </ul>
-<div style="width: 50%; margin-left: 25%">
+<div style=" width: 50%; margin-left: 25%; display:inline-block; transform: translateY(100vh) translateY(-200%)">
     <div class="search">
         <div class="search-wrapper">
-            <input id="search" placeholder="Message"><i class="material-icons">message</i>
+            <div class = "row">
+                <div class="col s11">
+                    <input id="search" placeholder="Message">
+                </div>
+                <div class = "col s1">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">
+                        <i class="material-icons">message</i>
+                    </button>
+                </div>
+            </div>
+            
             <div class="search-results"></div>
         </div>
     </div>
