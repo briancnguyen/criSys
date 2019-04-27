@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" type="text/css">
   <style>
     #map {
-      height: 91vh;
+      height: 92vh;
       width: 100%
     }
     html,
@@ -49,8 +49,29 @@
       z-index: 1000;
     }
     .sidenav-overlay {
-    background-color: transparent;
+      background-color: transparent;
     }
+    input:focus {
+      border-bottom: none!important;
+      box-shadow: none!important;
+    }
+    .waves-effect.waves-blue .waves-ripple {
+      background-color: #42a5f5;
+    }
+    .dropdown-content {
+      background-color: #FFFFFF;
+      margin: 0;
+      display: none;
+      min-width: 500px; /* Changed this to accomodate content width */
+      max-height: auto;
+      margin-left: -1px; /* Add this to keep dropdown in line with edge of navbar */
+      overflow: hidden; /* Changed this from overflow-y:auto; to overflow:hidden; */
+      opacity: 0;
+      position: absolute;
+      white-space: nowrap;
+      z-index: 1000;
+      will-change: width, height;
+    } 
   </style>
 </head>
 
@@ -72,21 +93,172 @@
       <li><a class="subheader">Subheader</a></li>
       <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
   </ul>
+
+  <ul id='notifications' class='dropdown-content collection'>
+    <li class="collection-item avatar">
+      <img src="images/Intersect.png" alt="" class="circle">
+      <p><b>San Francisco Earthquake - 5:00 PM</b><br>
+         Daly City, California
+      </p>
+    </li>
+    <li class="collection-item avatar">
+      <img src="images/Intersect.png" alt="" class="circle">
+      <p><b>San Francisco Earthquake - 4:50 PM</b><br>
+          Emeryville, California
+      </p>
+    </li>
+    <li class="collection-item avatar">
+        <img src="images/Intersect.png" alt="" class="circle">
+      <p><b>San Francisco Earthquake - 4:40 PM</b><br>
+          Oakland, California
+      </p>
+    </li>
+    <li class="collection-item avatar">
+      <img src="images/Intersect.png" alt="" class="circle">
+      <p><b>San Francisco Earthquake - 4:30 PM</b><br>
+          Berkeley, California
+      </p>
+    </li>
+  </ul>
+
+  <ul id='contacts' class='dropdown-content'>
+    <ul class="collapsible">
+        <li class="bold"><a class="collapsible-header waves-effect waves-blue" tabindex="0">Pinned</a>
+          <div class="collapsible-body">
+              <ul class="collapsible" tabindex="1">
+                  <li>
+                      <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
+                      <div class="collapsible-body">
+                          <div class="row">
+                              <div class = "col s1"></div>
+                              <div class = "col s11">
+                                  Lorem ipsum dolor sit amet.
+                              </div>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
+                      <div class="collapsible-body">
+                          <div class="row">
+                              <div class = "col s1"></div>
+                              <div class = "col s11">
+                                  Lorem ipsum dolor sit amet.
+                              </div>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
+                      <div class="collapsible-body">
+                          <div class="row">
+                              <div class = "col s1"></div>
+                              <div class = "col s11">
+                                  Lorem ipsum dolor sit amet.
+                              </div>
+                          </div>
+                      </div>
+                  </li>
+              </ul>
+          </div>
+        </li>
+        <li class="bold"><a class="collapsible-header waves-effect waves-blue" tabindex="0">Pinned</a>
+            <div class="collapsible-body">
+                <ul class="collapsible" tabindex="1">
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class = "col s1"></div>
+                                <div class = "col s11">
+                                    Lorem ipsum dolor sit amet.
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class = "col s1"></div>
+                                <div class = "col s11">
+                                    Lorem ipsum dolor sit amet.
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class = "col s1"></div>
+                                <div class = "col s11">
+                                    Lorem ipsum dolor sit amet.
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li class="bold"><a class="collapsible-header waves-effect waves-blue" tabindex="0">Pinned</a>
+            <div class="collapsible-body">
+                <ul class="collapsible" tabindex="1">
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class = "col s1"></div>
+                                <div class = "col s11">
+                                    Lorem ipsum dolor sit amet.
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class = "col s1"></div>
+                                <div class = "col s11">
+                                    Lorem ipsum dolor sit amet.
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
+                        <div class="collapsible-body">
+                            <div class="row">
+                                <div class = "col s1"></div>
+                                <div class = "col s11">
+                                    Lorem ipsum dolor sit amet.
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+  </ul>
+          
+          
   <nav>
     <div class="nav-wrapper blue darken-3">
       <a href="{{ url_for('index') }}" class="brand-logo center">criSys</a>
       <ul class="left hide-on-med-and-down">
-        <li data-target="slide-out" class="sidenav-trigger"><a href="#"><i class="material-icons">menu</i></a></li>
+        <li data-target="slide-out" class="sidenav-trigger"><a href="#" style="padding-left:0px;"><i class="material-icons">menu</i></a></li>
       </ul>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li>
-          <a href="{{ url_for('chat') }}"><i class="fas fa-sm fa-comment-alt"></i></a>
+          <a href="{{ url_for('chat') }}"><i class="fas fa-lg fa-comment-alt"></i></a>
         </li>
         <li>
-          <a href="{{ url_for('contacts') }}"><i class="fas fa-sm fa-users"></i></a>
+          <a class='dropdown-trigger' href='#' data-target='contacts'><i class="fas fa-lg fa-users"></i></a>
         </li>
         <li>
-          <a href="#"><i class="fas fa-sm fa-exclamation-circle"></i></a>
+          <a class='dropdown-trigger' href='#' data-target='notifications'><i class="fas fa-lg fa-exclamation-circle"></i></a>
         </li>
       </ul>
     </div>
@@ -108,6 +280,7 @@
     $(document).ready(function(){
       $('.collapsible').collapsible({accordion: false});
       $('.sidenav').sidenav();
+      $('.dropdown-trigger').dropdown({coverTrigger:false, constrainWidth:false});
     });
   </script>
 
