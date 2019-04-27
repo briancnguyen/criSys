@@ -1,16 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}   
-<ul id="nav-mobile" class="sidenav sidenav-fixed" style="display: inline-block; transform: translateX(0px) translateY(64px); height:91%">
+<!-- style="display: inline-block; transform: translateX(0px) translateY(64px); height:91%" -->
+<ul id="nav-mobile" class="sidenav sidenav-fixed" style="margin-top:65px;" >
     <li class="search">
-        <div class="search-wrapper row">
-            <div class="col s9">
-                <input id="search" placeholder="Search">
-                
-            </div>
-            <div class="col s3">
-                <i class="fas fa-search"></i>
-            </div>
-            <div class="search-results"></div> 
+        <div class="search-wrapper">
+            <input id="search" placeholder="Search">
+            <div class="search-results"></div>
         </div>
     </li>
     <ul class="collapsible expandable">
@@ -133,7 +128,7 @@
         </li>
     </ul>
 </ul>
-<!-- <ul id="nav-mobile" class="sidenav sidenav-fixed" style="display: inline-block; transform: translateX(100vw) translateX(-100%) translateY(64px); height:91%">
+<ul id="nav-mobile" class="sidenav sidenav-fixed" style="margin-left: 80%; margin-top:65px;">
     <ul class="collapsible expandable">
         <li class="bold"><a class="collapsible-header waves-effect waves-teal" tabindex="0">Pinned</a>
             <div class="collapsible-body">
@@ -253,5 +248,5 @@
             </div>
         </li>
     </ul>
-</ul> -->
+</ul>
 {% endblock %}
