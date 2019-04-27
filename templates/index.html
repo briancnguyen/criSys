@@ -1,163 +1,103 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 
-<head>
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-  <meta charset="utf-8">
-  <title>criSys</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Materialize CSS CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <!-- Materialize Icons CDN -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!-- Font Awesome Icons CDN -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
-    crossorigin="anonymous">
-  <!-- Main CSS (If not loading, Ctrl + F5)-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" type="text/css">
-  <style>
-    /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-    #map {
-      height: 91vh;
-      width: 100%
-    }
+{% block content %}
+<div id="map"></div>
+<script>
+  function initMap() {
+    var infowindow = new google.maps.InfoWindow();
+    var markers = [];
+    var counter = 0;
+    var default_location = { lat: 39.0119, lng: -98.4842 };
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 5,
+      center: default_location,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
 
-    /* Optional: Makes the sample page fill the window. */
-    html,
-    body {
-      height: 98%;
-      margin: 0;
-      padding: 0;
-    }
-  </style>
-</head>
-
-<body>
-  <nav>
-    <div class="nav-wrapper blue darken-3">
-      <a href="#" class="brand-logo"><i class="material-icons left brand-icon">flash_on</i>criSys</a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li>
-          <span><a href="{{ url_for('chat') }}"><i class="fas fa-sm fa-comment-alt"></i></a></span>
-        </li>
-        <li>
-          <span><a href="{{ url_for('contacts') }}"><i class="fas fa-sm fa-users"></i></a></span>
-        </li>
-        <li>
-          <span><a href="#"><i class="fas fa-sm fa-exclamation-circle"></i></a></span>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
-  <div id="map"></div>
-  <script>
-    function initMap() {
-      var infowindow = new google.maps.InfoWindow();
-      var markers = [];
-      var counter = 0;
-      var default_location = { lat: 39.0119, lng: -98.4842 };
-      var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 5,
-        center: default_location,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      });
-
-      map.addListener('click', function(event) {
-        
-        let id = "Pin_" + Math.random().toString(36).replace('0.', '')  + Math.random().toString(36).replace('0.', '');
-        addMarker(event.latLng, id);
-        let latitude = event.latLng.lat();
-        let longtitude = event.latLng.lng();
-        newPin({latitude: latitude, longtitude: longtitude, id:id});
-      });
-
-      infowindow.addListener('domready', function () {
-        $("#deleteButton").click(function() {
-            deleteMarker($(this).data('id'));
-        });
-      });
-
-      const getPins = () => {
-        return fetch('{{ api_url }}').then(res => res.json());
-      }
-
-      getPins().then(function(result) {
-        for(let i in result) {
-            let pin = result[i];
-            let location = {
-              lat: parseFloat(pin.latitude), 
-              lng: parseFloat(pin.longitude)
-            };
-            addMarker(location, pin.id);
-        }
-      });
-
-      function addMarker(location, id){
-        const marker = new google.maps.Marker({
-          position: location,
-          map: map,
-          id: id
-        });
-
-        markers.push(marker);
-
-        var deleteButton = '<button id="deleteButton" data-id="' + id + '">Delete</button>';
-
-        marker.addListener('rightclick', function () {
-            infowindow.setContent(deleteButton);
-            infowindow.open(map, marker);
-        });
-      }
-
-      function deleteMarker(markerId) {
-        for (var i = 0; i < markers.length; i++) {
-          if (markers[i].id === markerId) {
-              markers[i].setMap(null);
-          }
-        }
-        deletePin({id:markerId});
-      }
-
-      function newPin(pin){
-        const options = {
-            method: 'POST',
-            body: JSON.stringify(pin),
-            headers: new Headers({
-                'Content-type': 'application/json'
-            })
-        }
-        return fetch('{{ api_url }}', options)
-            .then(res => res.json())
-            .then(res => console.log(res))
-            .catch(error => console.error('Error: ${error}'))
-      }
+    map.addListener('click', function(event) {
       
-      function deletePin(pin) {
-        const options = {
-            method: 'DELETE',
-            body: JSON.stringify(pin),
-            headers: new Headers({
-                'Content-type': 'application/json'
-            })
-        }
-        return fetch('{{ api_url }}', options)
-            .then(res => res.json())
-            .then(res => console.log(res))
-            .catch(error => console.error('Error: ${error}'))
+      let id = "Pin_" + Math.random().toString(36).replace('0.', '')  + Math.random().toString(36).replace('0.', '');
+      addMarker(event.latLng, id);
+      let latitude = event.latLng.lat();
+      let longtitude = event.latLng.lng();
+      newPin({latitude: latitude, longtitude: longtitude, id:id});
+    });
+
+    infowindow.addListener('domready', function () {
+      $("#deleteButton").click(function() {
+          deleteMarker($(this).data('id'));
+      });
+    });
+
+    const getPins = () => {
+      return fetch('{{ api_url }}').then(res => res.json());
+    }
+
+    getPins().then(function(result) {
+      for(let i in result) {
+          let pin = result[i];
+          let location = {
+            lat: parseFloat(pin.latitude), 
+            lng: parseFloat(pin.longitude)
+          };
+          addMarker(location, pin.id);
       }
-    }    
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJasvCiLPTsX0LJ_Fwp883mst4cQ3bSgM&libraries=drawing&callback=initMap" async defer></script>
-  <!-- jQuery JS -->
-  <script 
-    src="https://code.jquery.com/jquery-3.4.0.slim.min.js" 
-    integrity="sha256-ZaXnYkHGqIhqTbJ6MB4l9Frs/r7U4jlx7ir8PJYBqbI="
-    crossorigin="anonymous">
-    </script>
-  <!-- Materialize JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <!-- Custom JS -->
-</body>
-</html>
+    });
+
+    function addMarker(location, id){
+      const marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        id: id
+      });
+
+      markers.push(marker);
+
+      var deleteButton = '<button id="deleteButton" data-id="' + id + '">Delete</button>';
+
+      marker.addListener('rightclick', function () {
+          infowindow.setContent(deleteButton);
+          infowindow.open(map, marker);
+      });
+    }
+
+    function deleteMarker(markerId) {
+      for (var i = 0; i < markers.length; i++) {
+        if (markers[i].id === markerId) {
+            markers[i].setMap(null);
+        }
+      }
+      deletePin({id:markerId});
+    }
+
+    function newPin(pin){
+      const options = {
+          method: 'POST',
+          body: JSON.stringify(pin),
+          headers: new Headers({
+              'Content-type': 'application/json'
+          })
+      }
+      return fetch('{{ api_url }}', options)
+          .then(res => res.json())
+          .then(res => console.log(res))
+          .catch(error => console.error('Error: ${error}'))
+    }
+    
+    function deletePin(pin) {
+      const options = {
+          method: 'DELETE',
+          body: JSON.stringify(pin),
+          headers: new Headers({
+              'Content-type': 'application/json'
+          })
+      }
+      return fetch('{{ api_url }}', options)
+          .then(res => res.json())
+          .then(res => console.log(res))
+          .catch(error => console.error('Error: ${error}'))
+    }
+  }    
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJasvCiLPTsX0LJ_Fwp883mst4cQ3bSgM&libraries=drawing&callback=initMap" async defer></script>
+{% endblock %}
