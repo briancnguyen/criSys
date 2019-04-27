@@ -8,11 +8,13 @@ import atexit
 import os
 import json
 
+import uuid
+
 
 
 app = Flask(__name__, static_url_path='')
 
-db_name = 'mydb'
+db_name = 'pin_database'
 client = None
 db = None
 
@@ -44,8 +46,13 @@ elif os.path.isfile('vcap-local.json'):
 # When running this app on the local machine, default the port to 8000
 port = int(os.getenv('PORT', 8000))
 
+pin_database = client[db_name]
+
+print(pin_database)
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    print(db)
     return render_template('index.html', api_url='/api/pin')
 
 
@@ -53,11 +60,18 @@ def index():
 def pin_API():
     if request.method == 'POST':
         pin_info = request.get_json()
-        # pin_latitude = pin_info.get('latitude')
-        # pin_longtitude = pin_info.get('longtitude')
-        # new_pin = Pin(latitude=pin_latitude, longitude=pin_longtitude)
-        # DB.session.add(new_pin)
-        # DB.session.commit()
+        pin_latitude = pin_info.get('latitude')
+        pin_longtitude = pin_info.get('longtitude')
+        pin_id = 'pin_' + str(uuid.uuid4())
+        data = {
+            '_id':  pin_id,
+            'latitude': pin_latitude,
+            'longtitude': pin_longtitude,
+        }
+        pin_document = pin_database.create_document(data)
+        if pin_document.exists():
+            print('SUCCESS!!')
+            print(pin_database)
         return jsonify(pin_info)
     elif request.method == 'DELETE':
         pin_info = request.get_json()
