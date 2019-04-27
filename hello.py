@@ -50,11 +50,11 @@ def index():
 
 @app.route('/api/pin', methods=['GET', 'POST', 'DELETE'])
 def pin_API():
+    pin_info = request.get_json()
     if request.method == 'POST':
-        pin_info = request.get_json()
+        pin_id = pin_info.get('id')
         pin_latitude = pin_info.get('latitude')
         pin_longtitude = pin_info.get('longtitude')
-        pin_id = 'pin_' + str(uuid.uuid4())
         data = {
             '_id':  pin_id,
             'latitude': pin_latitude,
@@ -64,19 +64,19 @@ def pin_API():
         return jsonify(pin_info)
     elif request.method == 'DELETE':
         pin_info = request.get_json()
-        # deleted_pin = Pin.query.filter_by(id=pin_info.get('id')).first()
-        # DB.session.delete(deleted_pin)
-        # DB.session.commit()
+        pin_id = pin_info.get('id')
+        document = db[pin_id]
+        document.delete()
         return jsonify(pin_info)
     else: # 'GET' method
         results = []
         pins_collection = Result(db.all_docs, include_docs=True)
         for pin in pins_collection:
-            pin_doc = pin['doc']
+            pin_document = pin['doc']
             pin_info = {
-                'id': pin_doc.get('_id'),
-                'latitude': pin_doc.get('latitude'),
-                'longitude': pin_doc.get('longtitude')
+                'id': pin_document.get('_id'),
+                'latitude': pin_document.get('latitude'),
+                'longitude': pin_document.get('longtitude')
             }
             results.append(pin_info)
         return jsonify(results)
@@ -95,44 +95,6 @@ def contacts():
 @app.route('/alerts')
 def alerts():
     return render_template('alerts.html')
-
-
-# /* Endpoint to greet and add a new visitor to database.
-# * Send a POST request to localhost:8000/api/visitors with body
-# * {
-# *     "name": "Bob"
-# * }
-# */
-@app.route('/api/visitors', methods=['GET'])
-def get_visitor():
-    if client:
-        return jsonify(list(map(lambda doc: doc['name'], db)))
-    else:
-        print('No database')
-        return jsonify([])
-
-# /**
-#  * Endpoint to get a JSON array of all the visitors in the database
-#  * REST API example:
-#  * <code>
-#  * GET http://localhost:8000/api/visitors
-#  * </code>
-#  *
-#  * Response:
-#  * [ "Bob", "Jane" ]
-#  * @return An array of all the visitor names
-#  */
-@app.route('/api/visitors', methods=['POST'])
-def put_visitor():
-    user = request.json['name']
-    data = {'name':user}
-    if client:
-        my_document = db.create_document(data)
-        data['_id'] = my_document['_id']
-        return jsonify(data)
-    else:
-        print('No database')
-        return jsonify(data)
 
 @atexit.register
 def shutdown():

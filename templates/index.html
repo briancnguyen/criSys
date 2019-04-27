@@ -53,7 +53,6 @@
 
   <div id="map"></div>
   <script>
-
     function initMap() {
       var infowindow = new google.maps.InfoWindow();
       var markers = [];
@@ -66,10 +65,12 @@
       });
 
       map.addListener('click', function(event) {
-        addMarker(event.latLng);
-        const latitude = event.latLng.lat();
-        const longtitude = event.latLng.lng();
-        newPins({latitude: latitude, longtitude: longtitude});
+        
+        let id = "Pin_" + Math.random().toString(36).replace('0.', '')  + Math.random().toString(36).replace('0.', '');
+        addMarker(event.latLng, id);
+        let latitude = event.latLng.lat();
+        let longtitude = event.latLng.lng();
+        newPin({latitude: latitude, longtitude: longtitude, id:id});
       });
 
       infowindow.addListener('domready', function () {
@@ -85,22 +86,24 @@
       getPins().then(function(result) {
         for(let i in result) {
             let pin = result[i];
-            let location = {lat: parseFloat(pin.latitude), lng: parseFloat(pin.longitude)};
-            addMarker(location);
+            let location = {
+              lat: parseFloat(pin.latitude), 
+              lng: parseFloat(pin.longitude)
+            };
+            addMarker(location, pin.id);
         }
       });
 
-      function addMarker(location){
-        counter++;
+      function addMarker(location, id){
         const marker = new google.maps.Marker({
           position: location,
           map: map,
-          id: counter
+          id: id
         });
 
         markers.push(marker);
 
-        var deleteButton = '<button id="deleteButton" data-id="' + counter + '">Delete</button>';
+        var deleteButton = '<button id="deleteButton" data-id="' + id + '">Delete</button>';
 
         marker.addListener('rightclick', function () {
             infowindow.setContent(deleteButton);
@@ -114,11 +117,26 @@
               markers[i].setMap(null);
           }
         }
+        deletePin({id:markerId});
       }
 
-      function newPins(pin){
+      function newPin(pin){
         const options = {
             method: 'POST',
+            body: JSON.stringify(pin),
+            headers: new Headers({
+                'Content-type': 'application/json'
+            })
+        }
+        return fetch('{{ api_url }}', options)
+            .then(res => res.json())
+            .then(res => console.log(res))
+            .catch(error => console.error('Error: ${error}'))
+      }
+      
+      function deletePin(pin) {
+        const options = {
+            method: 'DELETE',
             body: JSON.stringify(pin),
             headers: new Headers({
                 'Content-type': 'application/json'
