@@ -6,7 +6,6 @@
   function initMap() {
     var infowindow = new google.maps.InfoWindow();
     var markers = [];
-    var counter = 0;
     var default_location = { lat: 39.0119, lng: -98.4842 };
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 5,
@@ -15,11 +14,10 @@
     });
 
     map.addListener('click', function(event) {
-      
       let id = "Pin_" + Math.random().toString(36).replace('0.', '')  + Math.random().toString(36).replace('0.', '');
-      addMarker(event.latLng, id);
       let latitude = event.latLng.lat();
       let longtitude = event.latLng.lng();
+      addMarker(event.latLng, id);
       newPin({latitude: latitude, longtitude: longtitude, id:id});
     });
 
@@ -53,10 +51,18 @@
 
       markers.push(marker);
 
-      var deleteButton = '<button id="deleteButton" data-id="' + id + '">Delete</button>';
+      var content = 
+      '<h5><img src="images/Intersect.png"/> San Francisco Earthquake </h5>' + 
+      '<h6>San Francisco, California</h6>' +
+      '<p>URGENT: Rescue Assistance Requested for estimated 50 individuals trapped under'+ 
+      'building debris in Daly City, unstable ground in danger of collapsing in under 36 hours </p>'+
+      '<p>Evacuation Assistance Requested for thousands in Bay Area trapped in flooded regions </p>' +
+      '<p>Oakland Fire Assistance Requested</p>' +
+      '<p>Food/Water Requested</p>' +
+      '<button class="btn-small red" id="deleteButton" data-id="' + id + '">Delete Event</button>' ;
 
       marker.addListener('rightclick', function () {
-          infowindow.setContent(deleteButton);
+          infowindow.setContent(content); 
           infowindow.open(map, marker);
       });
     }
