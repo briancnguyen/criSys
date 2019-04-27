@@ -2,15 +2,12 @@ from flask import Flask, render_template, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from flask_migrate import Migrate
-
 from cloudant import Cloudant
+from cloudant.result import Result, ResultByKey
 import atexit
 import os
 import json
-
 import uuid
-
-
 
 app = Flask(__name__, static_url_path='')
 
@@ -46,13 +43,8 @@ elif os.path.isfile('vcap-local.json'):
 # When running this app on the local machine, default the port to 8000
 port = int(os.getenv('PORT', 8000))
 
-pin_database = client[db_name]
-
-print(pin_database)
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    print(db)
     return render_template('index.html', api_url='/api/pin')
 
 
@@ -68,10 +60,7 @@ def pin_API():
             'latitude': pin_latitude,
             'longtitude': pin_longtitude,
         }
-        pin_document = pin_database.create_document(data)
-        if pin_document.exists():
-            print('SUCCESS!!')
-            print(pin_database)
+        pin_document = db.create_document(data)
         return jsonify(pin_info)
     elif request.method == 'DELETE':
         pin_info = request.get_json()
@@ -80,15 +69,16 @@ def pin_API():
         # DB.session.commit()
         return jsonify(pin_info)
     else: # 'GET' method
-        # pins = Pin.query.all()
         results = []
-        # for pin in pins:
-        #     pin_info = {
-        #         'id': pin.id,
-        #         'latitude': pin.latitude,
-        #         'longitude': pin.longitude,
-        #     }
-        #     results.append(pin_info)
+        pins_collection = Result(db.all_docs, include_docs=True)
+        for pin in pins_collection:
+            pin_doc = pin['doc']
+            pin_info = {
+                'id': pin_doc.get('_id'),
+                'latitude': pin_doc.get('latitude'),
+                'longitude': pin_doc.get('longtitude')
+            }
+            results.append(pin_info)
         return jsonify(results)
 
 
