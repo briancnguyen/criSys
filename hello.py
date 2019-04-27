@@ -1,8 +1,14 @@
+from flask import Flask, render_template, jsonify, request
+from flask_sqlalchemy import SQLAlchemy
+from flask_socketio import SocketIO
+from flask_migrate import Migrate
+
 from cloudant import Cloudant
-from flask import Flask, render_template, request, jsonify
 import atexit
 import os
 import json
+
+
 
 app = Flask(__name__, static_url_path='')
 
@@ -40,7 +46,59 @@ port = int(os.getenv('PORT', 8000))
 
 @app.route('/')
 def root():
-    return app.send_static_file('index.html')
+    return render_template('index.html')
+
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    pins = Pin.query.all()
+    print(pins)
+    return render_template('index.html', api_url='/api/pin')
+
+
+@app.route('/api/pin', methods=['GET', 'POST', 'DELETE'])
+def pin_API():
+    if request.method == 'POST':
+        pin_info = request.get_json()
+        pin_latitude = pin_info.get('latitude')
+        pin_longtitude = pin_info.get('longtitude')
+        new_pin = Pin(latitude=pin_latitude, longitude=pin_longtitude)
+        DB.session.add(new_pin)
+        DB.session.commit()
+        return jsonify(pin_info)
+    elif request.method == 'DELETE':
+        pin_info = request.get_json()
+        deleted_pin = Pin.query.filter_by(id=pin_info.get('id')).first()
+        DB.session.delete(deleted_pin)
+        DB.session.commit()
+        return jsonify(pin_info)
+    else: # 'GET' method
+        pins = Pin.query.all()
+        results = []
+        for pin in pins:
+            pin_info = {
+                'id': pin.id,
+                'latitude': pin.latitude,
+                'longitude': pin.longitude,
+            }
+            results.append(pin_info)
+        return jsonify(results)
+
+
+@app.route('/chat')
+def chat():
+    return render_template('chat.html')
+
+
+@app.route('/contacts')
+def contacts():
+    return render_template('contacts.html')
+
+
+@app.route('/alerts')
+def alerts():
+    return render_template('alerts.html')
+
 
 # /* Endpoint to greet and add a new visitor to database.
 # * Send a POST request to localhost:8000/api/visitors with body
