@@ -58,10 +58,10 @@
       var infowindow = new google.maps.InfoWindow();
       var markers = [];
       var counter = 0;
-      var uluru = { lat: 39.0119, lng: -98.4842 };
+      var default_location = { lat: 39.0119, lng: -98.4842 };
       var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 4,
-        center: uluru,
+        zoom: 5,
+        center: default_location,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
@@ -109,7 +109,7 @@
       }
 
       function deleteMarker(markerId) {
-        for (var i=0; i<markers.length; i++) {
+        for (var i = 0; i < markers.length; i++) {
           if (markers[i].id === markerId) {
               markers[i].setMap(null);
           }
